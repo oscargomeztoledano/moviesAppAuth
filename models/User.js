@@ -45,7 +45,25 @@ el documento.  */
 
 UserSchema.pre("save", function (next) {
     var user = this;
-    debug("En middleware pre...");
+    debug("En middleware pre (save)...");
+    // solo aplica una función hash al password si ha sido modificado (o es nuevo)
+    if (!user.isModified("password")) return next();
+    // genera la salt
+    bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
+        if (err) return next(err);
+        // aplica una función hash al password usando la nueva salt
+        bcrypt.hash(user.password, salt, function (err, hash) {
+            if (err) return next(err);
+            // sobrescribe el password escrito con el “hasheado”
+            user.password = hash;
+            next();
+        });
+    });
+});
+
+UserSchema.pre("findOneAndUpdate", function (next) {
+    var user = this;
+    debug("En middleware pre (update)...");
     // solo aplica una función hash al password si ha sido modificado (o es nuevo)
     if (!user.isModified("password")) return next();
     // genera la salt
