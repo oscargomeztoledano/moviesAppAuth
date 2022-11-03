@@ -91,7 +91,7 @@ function (req, res, next) {
                 user.comparePassword(req.body.password, 
                      function (err, isMatch) {
                           if (err) res.status(500).send("¡Error comprobando el password!");
-                          if (isMatch){                    
+                          if (isMatch){       
                                 next(); //pasamos a generar el token
                           }else
                                 res.status(401).send({
@@ -110,17 +110,8 @@ function (req, res, next) {
 function (req, res, next) {
     debug("token");
 
-
-    var u = {
-        username: user.username,
-        id: user.id
-    }
-    return token = jwt.sign(u, "password", {
-        expiresIn: 60 * 60 * 24 // expira en 24 horas...
-    })
-
     res.status(200).send({
-        message: "lala"
+        message: "token"
     });
 });
 
