@@ -4,7 +4,7 @@ var router = express.Router();
 var debug = require("debug")("moviesAppAuth:server");
 
 //Models
-var Movie = require("../models/User.js");
+var User = require("../models/User.js");
 
 var db = mongoose.connection;
 
