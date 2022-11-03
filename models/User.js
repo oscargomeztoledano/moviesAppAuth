@@ -30,6 +30,18 @@ var UserSchema = new Schema({
     }
 });
 
+/* El pre middleware se ejecuta antes de que suceda la operacion. 
+Por ejemplo, un middleware pre-save sera ejecutado antes de salvar 
+el documento.  */
+/* UsuarioSchema.pre('save', function(next){
+    if(...){ 
+        TareaAqui...
+       next()
+    } else {
+       next(new Error('Ha ocurrido un error'));
+    }
+ }); */
+ 
 UserSchema.pre("save", function (next) {
     var user = this;
     // solo aplica una función hash al password si ha sido modificado (o es nuevo)
