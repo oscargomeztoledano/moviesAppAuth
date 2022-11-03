@@ -3,7 +3,7 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
-var debug = require('debug')('moviesApp:server');
+var debug = require('debug')('moviesAppAuth:server');
 
 var mongoose = require("mongoose");
 

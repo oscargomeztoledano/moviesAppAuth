@@ -1,7 +1,7 @@
 var express = require("express");
 var mongoose = require("mongoose");
 var router = express.Router();
-var debug = require("debug")("moviesApp:server");
+var debug = require("debug")("moviesAppAuth:server");
 
 //Models
 var Movie = require("../models/Movie.js");
