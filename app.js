@@ -11,6 +11,8 @@ var indexRouter = require("./routes/index");
 var moviesRouter = require("./routes/movies");
 var bookmarksRouter = require("./routes/bookmarks");
 
+var usersRouter = require("./routes/users");
+
 var app = express();
 var bodyParser = require("body-parser");
 var cors = require("cors");
@@ -41,6 +43,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/movies", moviesRouter);
 app.use("/bookmarks", bookmarksRouter); 
+
+app.use("/users", usersRouter); 
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
