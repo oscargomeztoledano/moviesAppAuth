@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var debug = require("debug")("moviesAppAuth:server");
 
 
 //Para la encriptación del password
@@ -41,9 +42,10 @@ el documento.  */
        next(new Error('Ha ocurrido un error'));
     }
  }); */
- 
+
 UserSchema.pre("save", function (next) {
     var user = this;
+    debug("En middleware pre...");
     // solo aplica una función hash al password si ha sido modificado (o es nuevo)
     if (!user.isModified("password")) return next();
     // genera la salt
