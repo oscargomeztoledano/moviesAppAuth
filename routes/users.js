@@ -3,6 +3,11 @@ var mongoose = require("mongoose");
 var router = express.Router();
 var debug = require("debug")("moviesAppAuth:server");
 
+//Models
+var Movie = require("../models/User.js");
+
+var db = mongoose.connection;
+
 // GET del listado de usuarios ordenados por fecha de creación
 router.get("/", function (req, res, next) {
     User.find().sort("-creationdate").exec(function (err, users) {
