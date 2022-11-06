@@ -1,6 +1,7 @@
 var express = require("express");
 var mongoose = require("mongoose");
 var router = express.Router();
+var jwt = require('jsonwebtoken');
 var debug = require("debug")("moviesAppAuth:server");
 
 //Models
@@ -49,35 +50,34 @@ router.delete("/:id", function (req, res, next) {
 });
 
 // Comprueba si el usuario existe
-/* router.post("/signin", function (req, res, next) {
-    User.findOne({
-        username: req.body.username
-    }, function (err, user) {
-        if (err) res.status(500).send("¡Error comprobando el usuario!");
-        // Si el usuario existe...
-        if (user != null) {
-            user.comparePassword(req.body.password, function (err, isMatch) {
-                if (err) return next(err);
-                // Si el password es correcto...
-                if (isMatch)
-                    res.status(200).send({
-                        message: "ok",
-                        username: user.username,
-                        id: user._id
-                    });
-                else
-                    res.status(200).send({
-                        message: "ko"
-                    });
-            });
-        } else res.status(401).send({
-            message: "ko"
-        });
-    });
-}); */
+//  router.post("/signin", function (req, res, next) {
+//     User.findOne({
+//         username: req.body.username
+//     }, function (err, user) {
+//         if (err) res.status(500).send("¡Error comprobando el usuario!");
+//         // Si el usuario existe...
+//         if (user != null) {
+//             user.comparePassword(req.body.password, function (err, isMatch) {
+//                 if (err) return next(err);
+//                 // Si el password es correcto...
+//                 if (isMatch)
+//                     res.status(200).send({
+//                         message: "ok",
+//                         username: user.username,
+//                         id: user._id
+//                     });
+//                 else
+//                     res.status(401).send({
+//                         message: "ko"
+//                     });
+//             });
+//         } else res.status(401).send({
+//             message: "ko"
+//         });
+//     });
+// }); 
 
 router.post("/signin", 
-
 function (req, res, next) {
     debug("login");
         User.findOne({
@@ -91,7 +91,8 @@ function (req, res, next) {
                 user.comparePassword(req.body.password, 
                      function (err, isMatch) {
                           if (err) res.status(500).send("¡Error comprobando el password!");
-                          if (isMatch){       
+                          if (isMatch){  
+                                req.userFound = user;
                                 next(); //pasamos a generar el token
                           }else
                                 res.status(401).send({
@@ -108,10 +109,19 @@ function (req, res, next) {
         });
 },
 function (req, res, next) {
-    debug("token");
-
-    res.status(200).send({
-        message: "token"
+    debug("... generando token");
+    var u = {
+         username: req.userFound.username,
+         id: req.userFound.id
+    };
+    var password = req.userFound.password;
+    jwt.sign(u, password, {
+        expiresIn: 60 * 60 * 24 // expira en 24 horas...
+    }, function(err, generatedToken) {
+        if (err) res.status(500).send("¡Error generando token de autenticación");
+        else res.status(200).send({
+            token: generatedToken
+       });
     });
 });
 
