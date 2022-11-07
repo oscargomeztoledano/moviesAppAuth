@@ -1,6 +1,7 @@
 var express = require("express");
 var mongoose = require("mongoose");
-var jwt = require('jsonwebtoken');
+var jwt = require("jsonwebtoken");
+var crypto = require("crypto");
 var router = express.Router();
 var debug = require("debug")("moviesAppAuth:server");
 
@@ -8,6 +9,9 @@ var debug = require("debug")("moviesAppAuth:server");
 var User = require("../models/User.js");
 
 var db = mongoose.connection;
+
+//TOKEN_SECRET=crypto.randomBytes(64).toString('hex');
+TOKEN_SECRET="9f26e402586e2faa8da4c98a35f1b20d6b033c60";
 
 //Middleware utilizando "use"
 router.use("/secure", function (req, res, next) {
@@ -19,15 +23,15 @@ router.use("/secure", function (req, res, next) {
         })
     }
     retrievedToken = retrievedToken.replace("Bearer ", "")
-    jwt.verify(retrievedToken, "1234", function (err, retrievedToken) {
+    jwt.verify(retrievedToken, TOKEN_SECRET, function (err, retrievedToken) {
         if (err) {
             return res.status(401).send({
                 ok: false,
                 message: "Token inválido"
             });
         } else {
-            req.token = retrievedToken
-            next()
+            req.token = retrievedToken;
+            next();
         }
     });
 });
@@ -115,7 +119,6 @@ function (req, res, next) {
                      function (err, isMatch) {
                           if (err) res.status(500).send("¡Error comprobando el password!");
                           if (isMatch){  
-                                req.userFound = user;
                                 next(); //pasamos a generar el token
                           }else
                                 res.status(401).send({
@@ -133,12 +136,14 @@ function (req, res, next) {
 },
 function (req, res, next) {
     debug("... generando token");
+    // var u = {
+    //      username: req.body.userFound.username,
+    //      id: req.body.userFound.id
+    // };
     var u = {
-         username: req.userFound.username,
-         id: req.userFound.id
-    };
-    var password = req.userFound.password;
-    jwt.sign(u, password, {
+        username: req.body.username,
+   };
+    jwt.sign(u, TOKEN_SECRET, {
         expiresIn: 60 * 60 * 24 // expira en 24 horas...
     }, function(err, generatedToken) {
         if (err) res.status(500).send("¡Error generando token de autenticación");
