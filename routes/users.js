@@ -1,13 +1,36 @@
 var express = require("express");
 var mongoose = require("mongoose");
-var router = express.Router();
 var jwt = require('jsonwebtoken');
+var router = express.Router();
 var debug = require("debug")("moviesAppAuth:server");
 
 //Models
 var User = require("../models/User.js");
 
 var db = mongoose.connection;
+
+//Middleware utilizando "use"
+router.use("/secure", function (req, res, next) {
+    var retrievedToken = req.headers["authorization"]
+    if (!retrievedToken) {
+        res.status(401).send({
+            ok: false,
+            message: "Token inválido"
+        })
+    }
+    retrievedToken = retrievedToken.replace("Bearer ", "")
+    jwt.verify(retrievedToken, "1234", function (err, retrievedToken) {
+        if (err) {
+            return res.status(401).send({
+                ok: false,
+                message: "Token inválido"
+            });
+        } else {
+            req.token = retrievedToken
+            next()
+        }
+    });
+});
 
 // GET del listado de usuarios ordenados por fecha de creación
 router.get("/", function (req, res, next) {
@@ -120,7 +143,7 @@ function (req, res, next) {
     }, function(err, generatedToken) {
         if (err) res.status(500).send("¡Error generando token de autenticación");
         else res.status(200).send({
-            token: generatedToken
+            message: generatedToken
        });
     });
 });
