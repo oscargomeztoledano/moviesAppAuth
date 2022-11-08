@@ -5,6 +5,10 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var debug = require('debug')('moviesAppAuth:server');
 
+const dotenv = require('dotenv');
+// get config vars
+dotenv.config();
+
 var mongoose = require("mongoose");
 
 var indexRouter = require("./routes/index");
@@ -25,7 +29,7 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 // MongoDB Atlas DB cluster connection
 mongoose
   .connect(
-    "mongodb+srv://ivangzdiaz:6lpNYrKijUa02ZHk@cluster0.6tkmcfn.mongodb.net/?retryWrites=true&w=majority",
+    process.env.MONGODB,
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(() => debug("MongoDB Atlas DataBase connection successful"));
