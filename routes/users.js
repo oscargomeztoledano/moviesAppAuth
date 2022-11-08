@@ -25,15 +25,13 @@ function tokenVerify (req, res, next) {
             message: "Token inválido"
         })
     }else{       
-        jwt.verify(retrievedToken, process.env.TOKEN_SECRET, (err, retrievedToken) => {
+        jwt.verify(retrievedToken, process.env.TOKEN_SECRET,  function (err, retrievedToken) {
             if (err) {
-                debug(err.message);
                 res.status(401).send({
                     ok: false,
                     message: "Token inválido"
                 });
             } else {
-                req.token = retrievedToken;
                 next();
 
             }
@@ -50,29 +48,6 @@ function (req, res, next) {
     })
 });
 
-// GET del listado de usuarios ordenados por fecha de creación
-router.get("/", function (req, res, next) {
-    User.find().sort("-creationdate").exec(function (err, users) {
-        if (err) res.status(500).send(err);
-        else res.status(200).json(users);
-    });
-});
-
-// GET del listado de usuarios ordenados por fecha de creación
-router.get("/", function (req, res, next) {
-    User.find().sort("-creationdate").exec(function (err, users) {
-        if (err) res.status(500).send(err);
-        else res.status(200).json(users);
-    });
-});
-
-// GET de un único usuario por su Id
-router.get("/:id", function (req, res, next) {
-    User.findById(req.params.id, function (err, userinfo) {
-        if (err) res.status(500).send(err);
-        else res.status(200).json(userinfo);
-    });
-});
 
 // GET de un único usuario por su Id
 router.get("/secure/:id", tokenVerify, function (req, res, next) {
