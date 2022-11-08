@@ -1,1 +1,2 @@
-.env
+# archivos a ignorar
+# .env   #quitar comentario
