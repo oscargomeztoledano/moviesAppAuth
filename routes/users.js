@@ -33,7 +33,6 @@ function tokenVerify (req, res, next) {
                 });
             } else {
                 next();
-
             }
         });
     }
@@ -59,25 +58,9 @@ router.get("/secure/:id", tokenVerify, function (req, res, next) {
 });
 
 // POST de un nuevo usuario
-router.post("/", function (req, res, next) {
-    User.create(req.body, function (err, userinfo) {
-        if (err) res.status(500).send(err);
-        else res.sendStatus(200);
-    });
-});
-
-// POST de un nuevo usuario
 router.post("/secure", tokenVerify, function (req, res, next) {
     debug("Creación de un usuario segura con token");
     User.create(req.body, function (err, userinfo) {
-        if (err) res.status(500).send(err);
-        else res.sendStatus(200);
-    });
-});
-
-// PUT de un usuario existente identificado por su Id
-router.put("/:id", function (req, res, next) {
-    User.findByIdAndUpdate(req.params.id, req.body, function (err, userinfo) {
         if (err) res.status(500).send(err);
         else res.sendStatus(200);
     });
@@ -92,14 +75,6 @@ router.put("/secure/:id", tokenVerify, function (req, res, next) {
 });
 
 // DELETE de un usuario existente identificado por su Id
-router.delete("/:id", function (req, res, next) {
-    User.findByIdAndDelete(req.params.id, function (err, userinfo) {
-        if (err) res.status(500).send(err);
-        else res.sendStatus(200);
-    });
-});
-
-// DELETE de un usuario existente identificado por su Id
 router.delete("/secure/:id", tokenVerify, function (req, res, next) {
     debug("Borrado seguro de un usuario con token");
     User.findByIdAndDelete(req.params.id, function (err, userinfo) {
@@ -108,6 +83,7 @@ router.delete("/secure/:id", tokenVerify, function (req, res, next) {
     });
 });
 
+//Login/sign-in previo a la generación del token de autenticación
 // Comprueba si el usuario existe
 //  router.post("/signin", function (req, res, next) {
 //     User.findOne({
