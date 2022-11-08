@@ -47,6 +47,14 @@ function (req, res, next) {
     })
 });
 
+router.get("/",
+function (req, res, next) {
+    User.find().sort("-creationdate").exec(function (err, users) {
+        if (err) res.status(500).send(err);
+        else res.status(200).json(users);
+    })
+});
+
 
 // GET de un único usuario por su Id
 router.get("/secure/:id", tokenVerify, function (req, res, next) {
