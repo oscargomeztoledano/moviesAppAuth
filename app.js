@@ -18,6 +18,7 @@ var bookmarksRouter = require("./routes/bookmarks");
 var usersRouter = require("./routes/users");
 
 var app = express();
+
 var bodyParser = require("body-parser");
 var cors = require("cors");
 

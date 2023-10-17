@@ -107,35 +107,6 @@ router.delete("/:id", function (req, res, next) {
     });
 });
 
-//Login/sign-in previo a la generación del token de autenticación
-// Comprueba si el usuario existe
-//  router.post("/signin", function (req, res, next) {
-//     User.findOne({
-//         username: req.body.username
-//     }, function (err, user) {
-//         if (err) res.status(500).send("¡Error comprobando el usuario!");
-//         // Si el usuario existe...
-//         if (user != null) {
-//             user.comparePassword(req.body.password, function (err, isMatch) {
-//                 if (err) return next(err);
-//                 // Si el password es correcto...
-//                 if (isMatch)
-//                     res.status(200).send({
-//                         message: "ok",
-//                         username: user.username,
-//                         id: user._id
-//                     });
-//                 else
-//                     res.status(401).send({
-//                         message: "ko"
-//                     });
-//             });
-//         } else res.status(401).send({
-//             message: "ko"
-//         });
-//     });
-// }); 
-
 router.post("/signin", 
 function (req, res, next) {
     debug("login");
@@ -168,7 +139,7 @@ function (req, res, next) {
 },
 function (req, res, next) {
     debug("... generando token");
-    jwt.sign({username: req.body.username},process.env.TOKEN_SECRET, {expiresIn: 3600 // expira en 24 horas...
+    jwt.sign({username: req.body.username},process.env.TOKEN_SECRET, {expiresIn: 3600 // expira en 1 hora...
     }, function(err, generatedToken) {
         if (err) res.status(500).send("¡Error generando token de autenticación");
         else res.status(200).send({
